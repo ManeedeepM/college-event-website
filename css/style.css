@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------
-   CampusFest – global stylesheet
+   CampusFest – global stylesheet  (v2: video‑background edition)
    Applies to: index.html, events.html, register.html,
                myevents.html, about.html, contact.html,
                thankyou.html
@@ -14,12 +14,55 @@
 
 /* ---------- BASE ELEMENTS ---------- */
 html{scroll-behavior:smooth}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color:#212529;
+  /* create stacking context so .bg-video stays behind */
+  position:relative;
+  z-index:0;
+}
 
-/* navbar */
+/* ---------- FULL‑SCREEN BACKGROUND VIDEO ---------- */
+/* 1) Put this element once in each page ‑ just after <body> and before the navbar:
+
+     <video class="bg-video" autoplay muted loop playsinline>
+       <source src="assets/video/college.mp4" type="video/mp4">
+     </video>
+
+   2) Make sure the file lives at assets/video/college.mp4 (or edit src=).
+*/
+.bg-video{
+  position:fixed;
+  top:0;left:0;
+  width:100vw;height:100vh;
+  object-fit:cover;
+  z-index:-1;            /* keep behind every other element */
+  opacity:.75;           /* lower => lighter, higher => darker */
+}
+/* fallback tint if the video can’t load */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background:url("../img/college.jpg") center/cover no-repeat;
+  filter:brightness(.5);
+  z-index:-2;
+}
+
+/* Optional: dark overlay for better legibility.
+   Uncomment to make text pop even more. */
+/*
+body::after{
+  content:"";
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:-1;
+}
+*/
+
+/* ---------- NAVBAR ---------- */
 .navbar-brand{font-weight:700}
 
-/* primary CTA button */
+/* ---------- BUTTONS ---------- */
 .btn-brand{
   background:var(--brand);
   color:#fff;
@@ -27,28 +70,33 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
 }
 .btn-brand:hover{background:var(--brand-dark)}
 
-/* pale section background */
+/* ---------- CARDS & SECTIONS ---------- */
 .bg-brand-light{background:var(--brand-light)}
-
-/* card lift on hover */
 .card{
   transition:transform .25s, box-shadow .25s;
+  backdrop-filter:blur(5px) saturate(120%);   /* looks nice over moving video */
+  background:rgba(255,255,255,.85);
 }
 .card:hover{
   transform:translateY(-4px);
   box-shadow:0 0.75rem 1.5rem rgba(0,0,0,.1);
 }
 
-/* ---------- HERO (index.html & contact.html) ---------- */
+/* ---------- HERO / PAGE BANNERS ---------- */
 .hero,
-.contact-hero{
-  background:url("../img/college.jpg") center/cover no-repeat;
-  position:relative;
-  color:#fff;
-  text-shadow:0 2px 6px rgba(0,0,0,.6);
+.contact-hero,
+.page-hero{
+  height:50vh;min-height:340px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.7);
 }
-.hero{min-height:100vh;display:grid;place-items:center}
-.contact-hero{height:50vh;display:flex;align-items:center;justify-content:center}
+.hero{height:100vh}
+.hero h1,
+.page-hero h1,
+.contact-hero h1{
+  font-weight:800;
+  font-size:clamp(2.25rem,6vw,4rem);
+}
 .overlay{
   position:absolute;inset:0;
   background:rgba(0,0,0,.45);
@@ -76,30 +124,28 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
   background:var(--brand);
 }
 
-/* ---------- FUN COUNTER (about.html) ---------- */
+/* ---------- COUNTER (about.html) ---------- */
 .counter{
   font-size:2rem;
   font-weight:700;
   color:var(--brand);
 }
 
-/* ---------- EMBEDDED GOOGLE FORM (contact.html) ---------- */
+/* ---------- EMBEDDED GOOGLE FORM ---------- */
 .gform-embed{
   position:relative;
-  padding-bottom:75%;   /* 4:3 aspect ratio – adjust if needed */
+  padding-bottom:75%;   /* 4:3 aspect ratio */
   height:0;
   overflow:hidden;
   border-radius:.5rem;
   box-shadow:0 0 20px rgba(0,0,0,.15);
+  backdrop-filter:blur(4px) saturate(120%);
 }
 .gform-embed iframe{
-  position:absolute;
-  top:0;left:0;
-  width:100%;height:100%;
-  border:0;
+  position:absolute;top:0;left:0;width:100%;height:100%;border:0;
 }
 
-/* ---------- SOCIAL ICONS (contact.html) ---------- */
+/* ---------- SOCIAL ICONS ---------- */
 .social-icons a{
   font-size:1.8rem;
   margin:0 15px;
@@ -115,5 +161,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
 /* ---------- MEDIA QUERIES ---------- */
 @media (max-width:575.98px){
   .hero h1,
-  .contact-hero h1{font-size:2.25rem}
+  .contact-hero h1,
+  .page-hero h1{font-size:2.25rem}
+  .card{backdrop-filter:none;background:#fff}
 }

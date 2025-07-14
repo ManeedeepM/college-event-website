@@ -1,13 +1,26 @@
-<!doctype html><html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Events - CampusFest</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Events • CampusFest</title>
 
+  <!-- Bootstrap + site CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://kit.fontawesome.com/a2e0bf0b29.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<!-- ===== Navbar (identical everywhere) ===== -->
+
+<!-- full‑screen video (handled by style.css) -->
+<video class="bg-video" autoplay muted loop playsinline>
+  <source src="assets/video/college.mp4" type="video/mp4">
+</video>
+
+<!-- optional dark overlay -->
+<div class="overlay"></div>
+
+<!-- ===== Navbar ===== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm">
   <div class="container">
     <a class="navbar-brand fw-bold" href="index.html">CampusFest</a>
@@ -25,31 +38,36 @@
   </div>
 </nav>
 
-<div class="container py-5">
-  <h2 class="mb-4 text-center">Event Listings</h2>
+<!-- ===== Page header ===== -->
+<section class="page-hero">
+  <h1>Events</h1>
+</section>
 
-  <!-- Filters -->
-  <div class="row gy-2 mb-4">
-    <div class="col-md-3">
-      <select id="typeFilter" class="form-select">
-        <option value="">All Types</option>
-        <option value="Technical">Technical</option>
-        <option value="Cultural">Cultural</option>
-        <option value="Sports">Sports</option>
-        <option value="Others">Others</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <select id="deptFilter" class="form-select">
-        <option value="">All Depts</option>
-        <option value="CSE">CSE</option><option value="ECE">ECE</option>
-        <option value="ME">ME</option><option value="EEE">EEE</option>
-        <option value="CSD">CSD</option><option value="CSM">CSM</option>
-        <option value="CE">CE</option>
-      </select>
-    </div>
-    <div class="col-md-6">
-      <input id="searchBox" class="form-control" placeholder="Search events…">
+<!-- ===== Filters & listings ===== -->
+<div class="container py-5">
+
+  <!-- Filter bar -->
+  <div class="card shadow-sm p-3 mb-4 position-sticky top-0" style="backdrop-filter:blur(6px);background:rgba(255,255,255,.85);z-index:1020">
+    <div class="row gy-2">
+      <div class="col-md-3">
+        <select id="typeFilter" class="form-select">
+          <option value="">All Types</option>
+          <option value="Technical">Technical</option>
+          <option value="Cultural">Cultural</option>
+          <option value="Sports">Sports</option>
+          <option value="Others">Others</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select id="deptFilter" class="form-select">
+          <option value="">All Depts</option>
+          <option>CSE</option><option>ECE</option><option>ME</option><option>EEE</option>
+          <option>CSD</option><option>CSM</option><option>CE</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <input id="searchBox" class="form-control" placeholder="Search events…">
+      </div>
     </div>
   </div>
 
@@ -57,27 +75,26 @@
   <div id="eventGrid" class="row g-4"></div>
 </div>
 
+<!-- ===== Scripts ===== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/a2e0bf0b29.js" crossorigin="anonymous"></script>
 <script>
-/* ------- dummy event data (edit as you like) ------- */
+/* dummy data */
 const events=[
  {id:1,name:"Hack-O-Holics",date:"2025-08-12",venue:"Auditorium",type:"Technical",dept:"CSE",poster:"assets/img/tech.jpg"},
- {id:2,name:"Battle of Bands",date:"2025-08-13",venue:"Open Stage",type:"Cultural",dept:"ECE",poster:"assets/img/culture.jpg"},
+ {id:2,name:"Battle-of-Bands",date:"2025-08-13",venue:"Open Stage",type:"Cultural",dept:"ECE",poster:"assets/img/culture.jpg"},
  {id:3,name:"Football Finals",date:"2025-08-15",venue:"Main Ground",type:"Sports",dept:"ME",poster:"assets/img/sports.jpg"},
  {id:4,name:"Art Attack",date:"2025-08-16",venue:"Block B",type:"Others",dept:"EEE",poster:"assets/img/art.jpg"}];
 
-/* save so register.html can auto‑fill dropdown */
+/* share with register.html */
 localStorage.setItem("eventsData",JSON.stringify(events));
 
-/* render cards */
+/* render */
 const grid=document.getElementById("eventGrid");
 function render(){
   grid.innerHTML="";
   const t=typeFilter.value,d=deptFilter.value,q=searchBox.value.toLowerCase();
-  events.filter(e=>
-    (!t||e.type===t)&&(!d||e.dept===d)&&e.name.toLowerCase().includes(q)
-  ).forEach(e=>{
+  events.filter(e=>(!t||e.type===t)&&(!d||e.dept===d)&&e.name.toLowerCase().includes(q))
+        .forEach(e=>{
     grid.insertAdjacentHTML("beforeend",`
       <div class="col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm">
@@ -92,7 +109,8 @@ function render(){
         </div>
       </div>`);});
 }
-[typeFilter,deptFilter,searchBox].forEach(el=>el.addEventListener("input",render));
+["typeFilter","deptFilter","searchBox"].forEach(id=>document.getElementById(id).addEventListener("input",render));
 render();
 </script>
-</body></html>
+</body>
+</html>
